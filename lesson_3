@@ -1,0 +1,94 @@
+CREATE DATABASE vk;
+
+
+-- 1-1, М-М, 1-М
+CREATE TABLE users(
+id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+first_name VARCHAR(100) NOT NULL,
+last_name VARCHAR(100) NOT NULL,
+email VARCHAR(255) NOT NULL,
+phone VARCHAR(255)NOT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP
+);
+
+CREATE TABLE profiles(
+user_id INT UNSIGNED NOT NULL PRIMARY KEY,
+birthday DATE,
+gender CHAR (1) NOT NULL,
+city VARCHAR(60) NOT NULL,
+country VARCHAR(60) NOT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP
+);
+
+-- Таблица сообщений
+CREATE TABLE messages (
+id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "идентификатор строки",
+from_user_id INT UNSIGNED NOT NULL COMMENT "ССылка на отправителя сообщения",
+to_user_id INT UNSIGNED NOT NULL COMMENT "ССылка на получателя сообщения",
+body TEXT NOT NULL COMMENT "Текст сообщения",
+is_important BOOLEAN COMMENT "Признак важности",
+is_delivered BOOLEAN COMMENT "Признак доставки",
+created_at DATETIME DEFAULT NOW() COMMENT "Время создания строки", 
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP COMMENT "Время обновления строки"
+COMMENT "Сообщения"
+);
+
+-- Таблица друзей
+CREATE TABLE friendship (
+user_id INT UNSIGNED NOT NULL COMMENT "Ссылкана инициатора дружеских отношений",
+frend_id INT UNSIGNED NOT NULL COMMENT "ССылка на получателя приглашения дружить",
+status_id INT UNSIGNED NOT NULL COMMENT "ССылка на статус (текущее состояние) отношений",
+request_at DATETIME DEFAULT NOW() COMMENT "Время отправления приглашения дружить",
+confirmed_at DATETIME COMMENT "Время подтверждения приглашения",
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки", 
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP COMMENT "Время обновления строки",
+PRIMARY KEY (user_id, frend_id)COMMENT "Составной первичный ключ"
+)COMMENT "Таблица дружбы";
+
+-- Таблица статусов дружеских отношений
+CREATE TABLE freindship_statuses(
+id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "идентификатор строки",
+name VARCHAR(150) NOT NULL UNIQUE COMMENT "Название статуса" ,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки", 
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP COMMENT "Время обновления строки"
+)COMMENT "Статус дружбы";
+
+CREATE TABLE communities(
+id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "идентификатор строки",
+name VARCHAR(150) NOT NULL UNIQUE COMMENT "Название группы" ,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки", 
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP COMMENT "Время обновления строки"
+)COMMENT "Группы";
+
+CREATE TABLE communities_users(
+community_id INT UNSIGNED NOT NULL  COMMENT "Ссылка на группу",
+user_id INT UNSIGNED NOT NULL  COMMENT "Ссылка на пользователя",
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки", 
+PRIMARY KEY (community_id, user_id) COMMENT "Составной первичный ключ"
+)COMMENT "Участники групп, связь между пользователями и группами";
+
+-- Таблица медиафайлов
+CREATE TABLE media(
+id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки",
+user_id INT UNSIGNED NOT NULL  COMMENT "Ссылка на пользователя, который загрузил файл",
+filename VARCHAR(255) NOT NULL COMMENT "Путь к файлу" ,
+size INT NOT NULL  COMMENT "Размер файла",
+metadata JSON COMMENT "Метаданные файла",
+media_type_id INT UNSIGNED NOT NULL  COMMENT "Ссылка на тип контента",
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки", 
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP COMMENT "Время обновления строки"
+)COMMENT "Медиафайлы";
+
+-- Таблица типов медиафайлов
+CREATE TABLE media_types(
+id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки",
+name VARCHAR(255) NOT NULL UNIQUE COMMENT "Название типа" ,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки", 
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP COMMENT "Время обновления строки"
+)COMMENT "ТИпы медиафайлов";
+
+
+
+
